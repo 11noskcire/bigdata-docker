@@ -3,7 +3,7 @@ services:
    spark:
       build: .
       ports:
-        - 10001:10001
+        - 10001:10000
       command: bash -c "SPARK_NO_DAEMONIZE=1 start-thriftserver.sh"
       volumes:
         - ./conf:/opt/spark/conf
