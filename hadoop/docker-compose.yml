@@ -1,0 +1,42 @@
+version: "3"
+services:
+   namenode:
+      image: apache/hadoop:3.3.6
+      hostname: namenode
+      command: ["hdfs", "namenode"]
+      ports:
+        - 9870:9870
+      env_file:
+        - ./hadoop-env
+      volumes:
+        - ./conf:/opt/hadoop/etc/hadoop
+        - ./init.sh:/opt/hadoop/init.sh
+      environment:
+          ENSURE_NAMENODE_DIR: "/tmp/hadoop-root/dfs/name"
+   datanode:
+      image: apache/hadoop:3.3.6
+      command: ["hdfs", "datanode"]
+      #deploy:
+      #  replicas: 7
+      env_file:
+        - ./hadoop-env      
+   resourcemanager:
+      image: apache/hadoop:3.3.6
+      hostname: resourcemanager
+      command: ["yarn", "resourcemanager"]
+      ports:
+         - 8088:8088
+      env_file:
+        - ./hadoop-env
+   nodemanager:
+      image: apache/hadoop:3.3.6
+      command: ["yarn", "nodemanager"]
+      #deploy:
+      #  replicas: 7
+      env_file:
+        - ./hadoop-env
+
+
+networks:
+  default:
+    name: bigdata
