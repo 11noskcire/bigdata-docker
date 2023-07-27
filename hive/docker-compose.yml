@@ -1,0 +1,32 @@
+version: "3"
+services:
+   hiveserver2:
+      image: apache/hive:4.0.0-alpha-2
+      ports:
+        - 10000:10000
+        - 10002:10002
+      volumes:
+        - ../hadoop/conf/hive-site.xml:/opt/hadoop/conf/hive-site.xml
+      environment:
+        - HIVE_CUSTOM_CONF_DIR=/opt/hadoop/conf
+        - SERVICE_NAME=hiveserver2
+        - SERVICE_OPTS=-Dhive.metastore.uris=thrift://metastore:9083
+        - IS_RESUME=true
+   metastore:
+      image: apache/hive:4.0.0-alpha-2
+      volumes:
+        - ../hadoop/conf:/opt/hadoop/conf
+      environment:
+        - HIVE_CUSTOM_CONF_DIR=/opt/hadoop/conf
+        - SERVICE_NAME=metastore
+        - DB_DRIVER=postgres
+   postgres:
+      image: postgres:9.6.17-alpine
+      environment:
+        - POSTGRES_USER=hive
+        - POSTGRES_PASSWORD=hive
+        - POSTGRES_DB=hive
+
+networks:
+  default:
+    name: bigdata
